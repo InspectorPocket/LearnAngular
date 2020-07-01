@@ -1,4 +1,4 @@
-<form #employeeForm="ngForm" (ngSubmit)="saveEmployee(employeeForm)">
+<form #employeeForm="ngForm" (ngSubmit)="saveEmployee(employee)">
 <div class="panel panel-primary">
     <div class="panel-heading">
         <h3 class="panel-title">Create Employee</h3>
@@ -6,10 +6,13 @@
     <div class="panel-body ">
 
         <!-- Full Name -->
-        <div class="form-group">
-            <label for="fullName">Full Name</label>
-            <input type="text" id="fullName" class="form-control"
-                name="fullName" [(ngModel)]="fullName">
+        <div class="form-group"
+                [class.has-error]="name.invalid && name.touched"
+                [class.has-success]="name.valid">
+            <label for="name" class="control-label">Full Name</label>
+            <input required type="text" id="name" class="form-control"
+                    name="name" [(ngModel)]="employee.name" #name="ngModel">
+            <span class="help-block" *ngIf="name.invalid && name.touched">Full name is required</span>
         </div>
 
         <!-- Contact Preference -->
@@ -18,28 +21,32 @@
             <div class="form-control">
                 <label class="radio-inline">
                     <input type="radio" value="email"
-                        name="contactPreference" [(ngModel)]="contactPreference">
+                            name="contactPreference" [(ngModel)]="employee.contactPreference">
                     Email
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="phone"
-                        name="contactPreference" [(ngModel)]="contactPreference">
+                            name="contactPreference" [(ngModel)]="employee.contactPreference">
                     Phone
                 </label>
             </div>
         </div>
 
         <!-- Email -->
-        <div class="form-group">
-            <label for="email">Email</label>
-            <input type="text" id="email" class="form-control"
-                name="email" [(ngModel)]="email">
+        <div class="form-group"
+                [class.has-error]="email.invalid && email.touched"
+                [class.has-success]="email.valid">
+            <label for="email" class="control-label">Email</label>
+            <input required [email]="employee.email !== ''" type="text" id="email" class="form-control"
+                    name="email" [(ngModel)]="employee.email" #email="ngModel">
+            <span class="help-block" *ngIf="email.errors?.required && email.touched">Email address is required</span>
+            <span class="help-block" *ngIf="email.errors?.email && email.touched">Please enter a valid email</span>
         </div>
 
         <!-- Phone Number -->
         <div class="form-group">
             <label for="phoneNumber">Phone Number</label>
-            <input type="text" id="phoneNumber" class="form-control" name="phoneNumber" [(ngModel)]="phoneNumber">
+            <input type="text" id="phoneNumber" class="form-control" name="phoneNumber" [(ngModel)]="employee.phoneNumber">
         </div>
 
         <!-- Gender -->
@@ -47,11 +54,11 @@
             <label>Gender</label>
             <div class="form-control">
                 <label class="radio-inline">
-                    <input type="radio" value="male" name="gender" [(ngModel)]="gender">
+                    <input type="radio" value="male" name="gender" [(ngModel)]="employee.gender">
                     Male
                 </label>
                 <label class="radio-inline">
-                    <input type="radio" value="female" name="gender" [(ngModel)]="gender">
+                    <input type="radio" value="female" name="gender" [(ngModel)]="employee.gender">
                     Female
                 </label>
             </div>
@@ -61,7 +68,7 @@
         <div class="form-group">
             <div class="form-control">
                 <label class="checkbox-inline">
-                    <input type="checkbox" name="isActive" [(ngModel)]="isActive">Is Active
+                    <input type="checkbox" name="isActive" [(ngModel)]="employee.isActive">Is Active
                 </label>
             </div>
         </div>
@@ -69,16 +76,43 @@
         <!-- Department -->
         <div class="form-group">
             <label for="department">Department</label>
-            <select name="department" [(ngModel)]="department" id="department" class="form-control">
+            <select name="department" [(ngModel)]="employee.department" id="department" class="form-control">
                 <option *ngFor="let dept of departments" [value]="dept.id">{{dept.name}}</option>
             </select>
         </div>
 
+        <!-- DOB -->
+        <div class="form-group">
+            <label for="dateOfBirth">Date of Birth</label>
+            <input type="date" id="dateOfBirth" class="form-control" name="dateOfBirth" [(ngModel)]="employee.dateOfBirth">
+        </div>
+
+        <!-- Photo -->
+        <div class="form-group">
+            <label for="photoPath">Upload a Photo</label>
+            <input type="text" id="photoPath" class="form-control" name="photoPath" [(ngModel)]="employee.photoPath">
+        </div>
+
+        <!-- Show Preview Button -->
+        <div class="form-group">
+            <button type="button" (click)="togglePhotoPreview()" class="btn btn-primary">
+                {{previewPhoto? "Hide": "Show"}} Preview
+            </button>
+        </div>
+
+        <!-- Image -->
+        <div class="form-group">
+            <img [src]="employee.photoPath" height="200" width="200" *ngIf="previewPhoto">
+        </div>
+
     </div>
+    <!-- Submit Button -->
     <div class="panel-footer">
-        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="submit" class="btn btn-primary" [disabled]="employeeForm.invalid">Save</button>
     </div>
 </div>
 </form>
 
 Angular Generated Form Model: {{employeeForm.value | json}}
+<br><br>
+Our Employee Model: {{employee | json}}

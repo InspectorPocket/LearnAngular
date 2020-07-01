@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Departments } from '../models/department.model'
+import { Departments } from '../models/department.model';
+import { Employee } from "../models/employee.model";
 
 @Component({
     selector: 'app-create-employee',
@@ -8,6 +9,22 @@ import { Departments } from '../models/department.model'
     styleUrls: ['./create-employee.component.css']
 })
 export class CreateEmployeeComponent implements OnInit {
+    previewPhoto = false;
+
+    // employee here is what you use in the html to reference this class
+    // Employee is the model that is imported above
+    employee: Employee = {
+        id: null,
+        name: null,
+        gender: null,
+        contactPreference: null,
+        email: '',
+        phoneNumber: null,
+        dateOfBirth: null,
+        department: null,
+        isActive: null,
+        photoPath: null
+    }
 
     departments: Departments[] = [
         { id: 1, name: 'Help Desk' },
@@ -18,10 +35,14 @@ export class CreateEmployeeComponent implements OnInit {
 
     constructor() { }
 
+    togglePhotoPreview() {
+        this.previewPhoto = !this.previewPhoto;
+    }
+
     ngOnInit() {
     }
 
-    saveEmployee(empForm: NgForm): void {
-        console.log(empForm.value);
+    saveEmployee(newEmployee: Employee): void {
+        console.log(newEmployee);
     }
 }
