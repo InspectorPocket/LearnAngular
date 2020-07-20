@@ -1,5 +1,10 @@
 # LearnAngular
 
+Learning how to build apps with Angular.
+The course I'm following is by the talented [kudvenkat](https://www.youtube.com/playlist?list=PL6n9fhu94yhXwcl3a6rIfAI7QmGYIkfK5) on YouTube.
+
+____________________
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.7.
 
 ## Development server
