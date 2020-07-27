@@ -6,16 +6,36 @@ import { HttpClientModule } from '@angular/common/http';
 import { SelectRequiredValidatorDirective } from './shared/select-required-validator.directive';
 import { ConfirmEqualValidatorDirective } from './shared/confirm-equal-validator.directive';
 import { EmployeeService } from "./employees/employee.service";
+import { CreateEmployeeCanDeactivateService } from "./employees/create-employee-can-deactivate-guard.service";
 
 import { AppComponent } from './app.component';
 import { ListEmployeesComponent } from './employees/list-employees.component';
 import { CreateEmployeeComponent } from './employees/create-employee.component';
 import { DisplayEmployeeComponent } from './employees/display-employee.component';
+import { EmployeeDetailsComponent } from './employees/employee-details.component';
+import { EmployeeFilterPipe } from './employees/employee-filter.pipe';
+import { EmployeeListResolverService } from './employees/employee-list-resolver.service';
+import { PageNotFoundComponent } from './page-not-found.component';
+import { EmployeeDetailsGuardService } from './employees/employee-details-guard.service';
 
 const appRoutes: Routes = [
-    { path: 'list', component: ListEmployeesComponent },
-    { path: 'create', component: CreateEmployeeComponent },
-    { path: '', redirectTo: '/list', pathMatch: 'full' }
+    {
+        path: 'list',
+        component: ListEmployeesComponent,
+        resolve: { employeeList: EmployeeListResolverService }
+    },
+    {
+        path: 'edit/:id',
+        component: CreateEmployeeComponent,
+        canDeactivate: [CreateEmployeeCanDeactivateService]
+    },
+    {
+        path: 'employees/:id',
+        component: EmployeeDetailsComponent,
+        canActivate: [EmployeeDetailsGuardService]
+    },
+    { path: '', redirectTo: '/list', pathMatch: 'full' },
+    { path: 'not_found', component: PageNotFoundComponent }
 ];
 
 @NgModule({
@@ -25,15 +45,20 @@ const appRoutes: Routes = [
         CreateEmployeeComponent,
         SelectRequiredValidatorDirective,
         ConfirmEqualValidatorDirective,
-        DisplayEmployeeComponent
+        DisplayEmployeeComponent,
+        EmployeeDetailsComponent,
+        EmployeeFilterPipe,
+        PageNotFoundComponent
     ],
     imports: [
         BrowserModule,
         FormsModule,
         HttpClientModule,
         RouterModule.forRoot(appRoutes)
+        // enableTracing logs navigation events to the console
+        // RouterModule.forRoot(appRoutes, {enableTracing: true})
     ],
-    providers: [EmployeeService],
+    providers: [EmployeeService, CreateEmployeeCanDeactivateService, EmployeeListResolverService, EmployeeDetailsGuardService],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

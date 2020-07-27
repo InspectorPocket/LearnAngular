@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Departments } from '../models/department.model';
 import { Employee } from "../models/employee.model";
 import { EmployeeService } from "./employee.service";
-import { Router } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 
 @Component({
     selector: 'app-create-employee',
@@ -11,22 +11,16 @@ import { Router } from "@angular/router";
     styleUrls: ['./create-employee.component.css']
 })
 export class CreateEmployeeComponent implements OnInit {
+    // Using employeeForm as a selector
+    @ViewChild('employeeForm') public createEmployeeForm: NgForm;
+
     previewPhoto = false;
+
+    panelTitle: string;
 
     // employee here is what you use in the html to reference this class
     // Employee is the model that is imported above
-    employee: Employee = {
-        id: null,
-        name: null,
-        gender: null,
-        contactPreference: null,
-        email: '',
-        phoneNumber: null,
-        dateOfBirth: null,
-        department: 'select',
-        isActive: null,
-        photoPath: null
-    }
+    employee: Employee;
 
     departments: Departments[] = [
         { id: 1, name: 'Help Desk' },
@@ -37,17 +31,46 @@ export class CreateEmployeeComponent implements OnInit {
     ];
 
     constructor( private _employeeService: EmployeeService,
-                            private _router: Router) { }
+                            private _router: Router,
+                            private _route: ActivatedRoute) { }
 
     togglePhotoPreview() {
         this.previewPhoto = !this.previewPhoto;
     }
 
     ngOnInit() {
+        this._route.paramMap.subscribe(parameterMap => {
+            const id = +parameterMap.get('id');
+            this.getEmployee(id);
+        });
+    }
+
+    getEmployee(id: number) {
+        if (id === 0) {
+            this.employee = {
+                id: null,
+                name: null,
+                gender: null,
+                contactPreference: null,
+                email: '',
+                phoneNumber: null,
+                dateOfBirth: null,
+                department: 'select',
+                isActive: null,
+                photoPath: null
+            };
+            this.panelTitle = "Create Employee";
+            this.createEmployeeForm.reset();
+        } else {
+            this.panelTitle = "Edit Employee";
+            this.employee = Object.assign({}, this._employeeService.getEmployee(id));
+        }
     }
 
     saveEmployee(): void {
-        this._employeeService.save(this.employee);
+        const newEmployee: Employee = Object.assign({}, this.employee)
+        this._employeeService.save(newEmployee);
+        this.createEmployeeForm.reset();
         this._router.navigate(['list']);
     }
 }

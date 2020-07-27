@@ -1,6 +1,6 @@
-<div class="panel panel-primary" [class.panel-success]="selectedEmployeeId === employee.id">
+<div class="panel panel-primary">
     <div class="panel-heading">
-        <h3 class="panel-title">{{employee.name | uppercase}}</h3>
+        <h3 class="panel-title">{{employee.name}}</h3>
     </div>
     <div class="panel-body ">
         <div class="col-xs-10">
@@ -58,13 +58,8 @@
         </div>
     </div>
     <div class="panel-footer">
-        <button class="btn btn-primary" (click)="viewEmployee()">View</button>
-        <button class="btn btn-primary" (click)="editEmployee()">Edit</button>
-        <span *ngIf="confirmDelete">
-            <span>Are you sure you want to delete?</span>
-            <button class="btn btn-primary" (click)="deleteEmployee()">Yes</button>
-            <button class="btn btn-danger" (click)="confirmDelete=false">No</button>
-        </span>
-        <button *ngIf="!confirmDelete" class="btn btn-danger" (click)="confirmDelete=true" >Delete</button>
+        <a class="btn btn-primary" [routerLink]="['/list', {id:employee.id}]"
+            queryParamsHandling="preserve">Back to List</a>
+        <button class="btn btn-primary pull-right" (click)="viewNextEmployee()">View Next Employee</button>
     </div>
 </div>
